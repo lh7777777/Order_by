@@ -177,6 +177,34 @@ int SGX_UBRIDGE(SGX_NOCONVENTION, ocall_readdn3label, (unsigned char* fres));
 #define OCALL_CLOSEDN3LABEL_DEFINED__
 void SGX_UBRIDGE(SGX_NOCONVENTION, ocall_closedn3label, (void));
 #endif
+#ifndef OCALL_OPENOUTPUTFILE_DEFINED__
+#define OCALL_OPENOUTPUTFILE_DEFINED__
+void SGX_UBRIDGE(SGX_NOCONVENTION, ocall_openoutputfile, (void));
+#endif
+#ifndef OCALL_WRITEOUTPUTFILE_DEFINED__
+#define OCALL_WRITEOUTPUTFILE_DEFINED__
+void SGX_UBRIDGE(SGX_NOCONVENTION, ocall_writeoutputfile, (int m));
+#endif
+#ifndef OCALL_WRITEOUTPUTFILE2_DEFINED__
+#define OCALL_WRITEOUTPUTFILE2_DEFINED__
+void SGX_UBRIDGE(SGX_NOCONVENTION, ocall_writeoutputfile2, (char* m));
+#endif
+#ifndef OCALL_CLOSEOUTPUTFILE_DEFINED__
+#define OCALL_CLOSEOUTPUTFILE_DEFINED__
+void SGX_UBRIDGE(SGX_NOCONVENTION, ocall_closeoutputfile, (void));
+#endif
+#ifndef OCALL_STARTCLOCK_DEFINED__
+#define OCALL_STARTCLOCK_DEFINED__
+void SGX_UBRIDGE(SGX_NOCONVENTION, ocall_startclock, (void));
+#endif
+#ifndef OCALL_ENDCLOCK_DEFINED__
+#define OCALL_ENDCLOCK_DEFINED__
+void SGX_UBRIDGE(SGX_NOCONVENTION, ocall_endclock, (void));
+#endif
+#ifndef OCALL_TIME_DEFINED__
+#define OCALL_TIME_DEFINED__
+int SGX_UBRIDGE(SGX_NOCONVENTION, ocall_time, (void));
+#endif
 
 sgx_status_t ecall_init(sgx_enclave_id_t eid, int mm, char* ssk);
 sgx_status_t ecall_update(sgx_enclave_id_t eid, int dnc);

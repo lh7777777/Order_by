@@ -110,6 +110,18 @@ typedef struct ms_ocall_readdn3label_t {
 	unsigned char* ms_fres;
 } ms_ocall_readdn3label_t;
 
+typedef struct ms_ocall_writeoutputfile_t {
+	int ms_m;
+} ms_ocall_writeoutputfile_t;
+
+typedef struct ms_ocall_writeoutputfile2_t {
+	char* ms_m;
+} ms_ocall_writeoutputfile2_t;
+
+typedef struct ms_ocall_time_t {
+	int ms_retval;
+} ms_ocall_time_t;
+
 static sgx_status_t SGX_CDECL sgx_ecall_init(void* pms)
 {
 	CHECK_REF_POINTER(pms, sizeof(ms_ecall_init_t));
@@ -205,10 +217,17 @@ SGX_EXTERNC const struct {
 
 SGX_EXTERNC const struct {
 	size_t nr_ocall;
-	uint8_t entry_table[40][4];
+	uint8_t entry_table[47][4];
 } g_dyn_entry_table = {
-	40,
+	47,
 	{
+		{0, 0, 0, 0, },
+		{0, 0, 0, 0, },
+		{0, 0, 0, 0, },
+		{0, 0, 0, 0, },
+		{0, 0, 0, 0, },
+		{0, 0, 0, 0, },
+		{0, 0, 0, 0, },
 		{0, 0, 0, 0, },
 		{0, 0, 0, 0, },
 		{0, 0, 0, 0, },
@@ -1174,3 +1193,133 @@ sgx_status_t SGX_CDECL ocall_closedn3label(void)
 
 	return status;
 }
+sgx_status_t SGX_CDECL ocall_openoutputfile(void)
+{
+	sgx_status_t status = SGX_SUCCESS;
+	status = sgx_ocall(40, NULL);
+
+	return status;
+}
+sgx_status_t SGX_CDECL ocall_writeoutputfile(int m)
+{
+	sgx_status_t status = SGX_SUCCESS;
+
+	ms_ocall_writeoutputfile_t* ms = NULL;
+	size_t ocalloc_size = sizeof(ms_ocall_writeoutputfile_t);
+	void *__tmp = NULL;
+
+
+	__tmp = sgx_ocalloc(ocalloc_size);
+	if (__tmp == NULL) {
+		sgx_ocfree();
+		return SGX_ERROR_UNEXPECTED;
+	}
+	ms = (ms_ocall_writeoutputfile_t*)__tmp;
+	__tmp = (void *)((size_t)__tmp + sizeof(ms_ocall_writeoutputfile_t));
+	ocalloc_size -= sizeof(ms_ocall_writeoutputfile_t);
+
+	ms->ms_m = m;
+	status = sgx_ocall(41, ms);
+
+	if (status == SGX_SUCCESS) {
+	}
+	sgx_ocfree();
+	return status;
+}
+
+sgx_status_t SGX_CDECL ocall_writeoutputfile2(char* m)
+{
+	sgx_status_t status = SGX_SUCCESS;
+	size_t _len_m = 17;
+
+	ms_ocall_writeoutputfile2_t* ms = NULL;
+	size_t ocalloc_size = sizeof(ms_ocall_writeoutputfile2_t);
+	void *__tmp = NULL;
+
+
+	CHECK_ENCLAVE_POINTER(m, _len_m);
+
+	if (ADD_ASSIGN_OVERFLOW(ocalloc_size, (m != NULL) ? _len_m : 0))
+		return SGX_ERROR_INVALID_PARAMETER;
+
+	__tmp = sgx_ocalloc(ocalloc_size);
+	if (__tmp == NULL) {
+		sgx_ocfree();
+		return SGX_ERROR_UNEXPECTED;
+	}
+	ms = (ms_ocall_writeoutputfile2_t*)__tmp;
+	__tmp = (void *)((size_t)__tmp + sizeof(ms_ocall_writeoutputfile2_t));
+	ocalloc_size -= sizeof(ms_ocall_writeoutputfile2_t);
+
+	if (m != NULL) {
+		ms->ms_m = (char*)__tmp;
+		if (_len_m % sizeof(*m) != 0) {
+			sgx_ocfree();
+			return SGX_ERROR_INVALID_PARAMETER;
+		}
+		if (memcpy_s(__tmp, ocalloc_size, m, _len_m)) {
+			sgx_ocfree();
+			return SGX_ERROR_UNEXPECTED;
+		}
+		__tmp = (void *)((size_t)__tmp + _len_m);
+		ocalloc_size -= _len_m;
+	} else {
+		ms->ms_m = NULL;
+	}
+	
+	status = sgx_ocall(42, ms);
+
+	if (status == SGX_SUCCESS) {
+	}
+	sgx_ocfree();
+	return status;
+}
+
+sgx_status_t SGX_CDECL ocall_closeoutputfile(void)
+{
+	sgx_status_t status = SGX_SUCCESS;
+	status = sgx_ocall(43, NULL);
+
+	return status;
+}
+sgx_status_t SGX_CDECL ocall_startclock(void)
+{
+	sgx_status_t status = SGX_SUCCESS;
+	status = sgx_ocall(44, NULL);
+
+	return status;
+}
+sgx_status_t SGX_CDECL ocall_endclock(void)
+{
+	sgx_status_t status = SGX_SUCCESS;
+	status = sgx_ocall(45, NULL);
+
+	return status;
+}
+sgx_status_t SGX_CDECL ocall_time(int* retval)
+{
+	sgx_status_t status = SGX_SUCCESS;
+
+	ms_ocall_time_t* ms = NULL;
+	size_t ocalloc_size = sizeof(ms_ocall_time_t);
+	void *__tmp = NULL;
+
+
+	__tmp = sgx_ocalloc(ocalloc_size);
+	if (__tmp == NULL) {
+		sgx_ocfree();
+		return SGX_ERROR_UNEXPECTED;
+	}
+	ms = (ms_ocall_time_t*)__tmp;
+	__tmp = (void *)((size_t)__tmp + sizeof(ms_ocall_time_t));
+	ocalloc_size -= sizeof(ms_ocall_time_t);
+
+	status = sgx_ocall(46, ms);
+
+	if (status == SGX_SUCCESS) {
+		if (retval) *retval = ms->ms_retval;
+	}
+	sgx_ocfree();
+	return status;
+}
+

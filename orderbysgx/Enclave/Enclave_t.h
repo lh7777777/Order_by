@@ -61,6 +61,13 @@ sgx_status_t SGX_CDECL ocall_closedn2label(void);
 sgx_status_t SGX_CDECL ocall_opendn3label(void);
 sgx_status_t SGX_CDECL ocall_readdn3label(int* retval, unsigned char* fres);
 sgx_status_t SGX_CDECL ocall_closedn3label(void);
+sgx_status_t SGX_CDECL ocall_openoutputfile(void);
+sgx_status_t SGX_CDECL ocall_writeoutputfile(int m);
+sgx_status_t SGX_CDECL ocall_writeoutputfile2(char* m);
+sgx_status_t SGX_CDECL ocall_closeoutputfile(void);
+sgx_status_t SGX_CDECL ocall_startclock(void);
+sgx_status_t SGX_CDECL ocall_endclock(void);
+sgx_status_t SGX_CDECL ocall_time(int* retval);
 
 #ifdef __cplusplus
 }

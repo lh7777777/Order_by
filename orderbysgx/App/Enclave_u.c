@@ -84,6 +84,18 @@ typedef struct ms_ocall_readdn3label_t {
 	unsigned char* ms_fres;
 } ms_ocall_readdn3label_t;
 
+typedef struct ms_ocall_writeoutputfile_t {
+	int ms_m;
+} ms_ocall_writeoutputfile_t;
+
+typedef struct ms_ocall_writeoutputfile2_t {
+	char* ms_m;
+} ms_ocall_writeoutputfile2_t;
+
+typedef struct ms_ocall_time_t {
+	int ms_retval;
+} ms_ocall_time_t;
+
 static sgx_status_t SGX_CDECL Enclave_ocall_print_string(void* pms)
 {
 	ms_ocall_print_string_t* ms = SGX_CAST(ms_ocall_print_string_t*, pms);
@@ -380,11 +392,63 @@ static sgx_status_t SGX_CDECL Enclave_ocall_closedn3label(void* pms)
 	return SGX_SUCCESS;
 }
 
+static sgx_status_t SGX_CDECL Enclave_ocall_openoutputfile(void* pms)
+{
+	if (pms != NULL) return SGX_ERROR_INVALID_PARAMETER;
+	ocall_openoutputfile();
+	return SGX_SUCCESS;
+}
+
+static sgx_status_t SGX_CDECL Enclave_ocall_writeoutputfile(void* pms)
+{
+	ms_ocall_writeoutputfile_t* ms = SGX_CAST(ms_ocall_writeoutputfile_t*, pms);
+	ocall_writeoutputfile(ms->ms_m);
+
+	return SGX_SUCCESS;
+}
+
+static sgx_status_t SGX_CDECL Enclave_ocall_writeoutputfile2(void* pms)
+{
+	ms_ocall_writeoutputfile2_t* ms = SGX_CAST(ms_ocall_writeoutputfile2_t*, pms);
+	ocall_writeoutputfile2(ms->ms_m);
+
+	return SGX_SUCCESS;
+}
+
+static sgx_status_t SGX_CDECL Enclave_ocall_closeoutputfile(void* pms)
+{
+	if (pms != NULL) return SGX_ERROR_INVALID_PARAMETER;
+	ocall_closeoutputfile();
+	return SGX_SUCCESS;
+}
+
+static sgx_status_t SGX_CDECL Enclave_ocall_startclock(void* pms)
+{
+	if (pms != NULL) return SGX_ERROR_INVALID_PARAMETER;
+	ocall_startclock();
+	return SGX_SUCCESS;
+}
+
+static sgx_status_t SGX_CDECL Enclave_ocall_endclock(void* pms)
+{
+	if (pms != NULL) return SGX_ERROR_INVALID_PARAMETER;
+	ocall_endclock();
+	return SGX_SUCCESS;
+}
+
+static sgx_status_t SGX_CDECL Enclave_ocall_time(void* pms)
+{
+	ms_ocall_time_t* ms = SGX_CAST(ms_ocall_time_t*, pms);
+	ms->ms_retval = ocall_time();
+
+	return SGX_SUCCESS;
+}
+
 static const struct {
 	size_t nr_ocall;
-	void * table[40];
+	void * table[47];
 } ocall_table_Enclave = {
-	40,
+	47,
 	{
 		(void*)Enclave_ocall_print_string,
 		(void*)Enclave_ocall_strcpy,
@@ -426,6 +490,13 @@ static const struct {
 		(void*)Enclave_ocall_opendn3label,
 		(void*)Enclave_ocall_readdn3label,
 		(void*)Enclave_ocall_closedn3label,
+		(void*)Enclave_ocall_openoutputfile,
+		(void*)Enclave_ocall_writeoutputfile,
+		(void*)Enclave_ocall_writeoutputfile2,
+		(void*)Enclave_ocall_closeoutputfile,
+		(void*)Enclave_ocall_startclock,
+		(void*)Enclave_ocall_endclock,
+		(void*)Enclave_ocall_time,
 	}
 };
 sgx_status_t ecall_init(sgx_enclave_id_t eid, int mm, char* ssk)
