@@ -10,7 +10,7 @@
 #include <fstream>
 using namespace std;
 
-int N = 50000;//数据数量
+int N = 0;//数据数量
 int NB = 2000;//sgx内存大小
 int c = 1;
 int m = 0;//Label数量
@@ -25,22 +25,18 @@ void Client_update(char *pt1, char *sk, int sklen);//加密明文数据并哈希
 int main()
 {
 	//随机生成密钥并设置label对应范围
-	//cout << "请输入密钥sk的位数：" << endl;
+
 	int a = 128;//密钥长度位数
-	//cin >> a;
 	sklen = a / 8;
 	Client_setup(sklen);
 
 	//随机生成明文
-	char * flag = NULL;
-	flag = (char*)malloc(N); //将来测试时end设为1000 0000
-	if( NULL == flag )
-	{
-		perror("memory for flag failed");
-	}
-	memset(flag, 0, N); //初始化为全0	
 
-	int num = 0;
+	cout << "请输入数据个数N（例如10000）：" << endl;
+	cin>>N;
+	map<int,int> flag;
+	
+	int num;
 	int *M = new int[N];
 	srand((unsigned)time(NULL));
 	/*for (int i = 0; i < N; i++)
@@ -57,6 +53,7 @@ int main()
 			}
 		}
 	}*/
+
 	for(int i = 0; i<N; i++ )
 	{
 		//一直产生随机数,直到不重复
@@ -70,10 +67,10 @@ int main()
 				flag[num] = 1; //已经产生的数,在flag里标记为1
 				break ; 
 			}
+			
 		}//退出do while，继续第i+1个随机数
 	}
-
-	cout<<"生成完毕"<<endl;
+	
 	ofstream inputfile;
 	inputfile.open("../text/input.txt");
 	for (int i = 0; i < N; i++)
@@ -121,7 +118,10 @@ void Client_setup(int len)
 {
 	GenerateAESKey(sk, len);// 128bits key
 	cout << "AES密钥为：" << sk << endl;
-	m = c * (N / NB);
+	if(N<=NB)
+		m=1;
+	else
+		m = c * ceil(N / NB);
 	cout << "label数量为：" << m << endl;
 	ofstream outfile;
 	outfile.open("../text/c_to_sgx.txt");
