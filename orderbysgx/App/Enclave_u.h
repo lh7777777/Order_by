@@ -193,6 +193,18 @@ void SGX_UBRIDGE(SGX_NOCONVENTION, ocall_writeoutputfile2, (char* m));
 #define OCALL_CLOSEOUTPUTFILE_DEFINED__
 void SGX_UBRIDGE(SGX_NOCONVENTION, ocall_closeoutputfile, (void));
 #endif
+#ifndef OCALL_STARTCLOCK1_DEFINED__
+#define OCALL_STARTCLOCK1_DEFINED__
+void SGX_UBRIDGE(SGX_NOCONVENTION, ocall_startclock1, (void));
+#endif
+#ifndef OCALL_ENDCLOCK1_DEFINED__
+#define OCALL_ENDCLOCK1_DEFINED__
+void SGX_UBRIDGE(SGX_NOCONVENTION, ocall_endclock1, (void));
+#endif
+#ifndef OCALL_TIME1_DEFINED__
+#define OCALL_TIME1_DEFINED__
+int SGX_UBRIDGE(SGX_NOCONVENTION, ocall_time1, (void));
+#endif
 #ifndef OCALL_STARTCLOCK_DEFINED__
 #define OCALL_STARTCLOCK_DEFINED__
 void SGX_UBRIDGE(SGX_NOCONVENTION, ocall_startclock, (void));

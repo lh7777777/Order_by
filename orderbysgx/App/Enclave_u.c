@@ -92,6 +92,10 @@ typedef struct ms_ocall_writeoutputfile2_t {
 	char* ms_m;
 } ms_ocall_writeoutputfile2_t;
 
+typedef struct ms_ocall_time1_t {
+	int ms_retval;
+} ms_ocall_time1_t;
+
 typedef struct ms_ocall_time_t {
 	int ms_retval;
 } ms_ocall_time_t;
@@ -422,6 +426,28 @@ static sgx_status_t SGX_CDECL Enclave_ocall_closeoutputfile(void* pms)
 	return SGX_SUCCESS;
 }
 
+static sgx_status_t SGX_CDECL Enclave_ocall_startclock1(void* pms)
+{
+	if (pms != NULL) return SGX_ERROR_INVALID_PARAMETER;
+	ocall_startclock1();
+	return SGX_SUCCESS;
+}
+
+static sgx_status_t SGX_CDECL Enclave_ocall_endclock1(void* pms)
+{
+	if (pms != NULL) return SGX_ERROR_INVALID_PARAMETER;
+	ocall_endclock1();
+	return SGX_SUCCESS;
+}
+
+static sgx_status_t SGX_CDECL Enclave_ocall_time1(void* pms)
+{
+	ms_ocall_time1_t* ms = SGX_CAST(ms_ocall_time1_t*, pms);
+	ms->ms_retval = ocall_time1();
+
+	return SGX_SUCCESS;
+}
+
 static sgx_status_t SGX_CDECL Enclave_ocall_startclock(void* pms)
 {
 	if (pms != NULL) return SGX_ERROR_INVALID_PARAMETER;
@@ -446,9 +472,9 @@ static sgx_status_t SGX_CDECL Enclave_ocall_time(void* pms)
 
 static const struct {
 	size_t nr_ocall;
-	void * table[47];
+	void * table[50];
 } ocall_table_Enclave = {
-	47,
+	50,
 	{
 		(void*)Enclave_ocall_print_string,
 		(void*)Enclave_ocall_strcpy,
@@ -494,6 +520,9 @@ static const struct {
 		(void*)Enclave_ocall_writeoutputfile,
 		(void*)Enclave_ocall_writeoutputfile2,
 		(void*)Enclave_ocall_closeoutputfile,
+		(void*)Enclave_ocall_startclock1,
+		(void*)Enclave_ocall_endclock1,
+		(void*)Enclave_ocall_time1,
 		(void*)Enclave_ocall_startclock,
 		(void*)Enclave_ocall_endclock,
 		(void*)Enclave_ocall_time,

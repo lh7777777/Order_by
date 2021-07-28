@@ -118,6 +118,10 @@ typedef struct ms_ocall_writeoutputfile2_t {
 	char* ms_m;
 } ms_ocall_writeoutputfile2_t;
 
+typedef struct ms_ocall_time1_t {
+	int ms_retval;
+} ms_ocall_time1_t;
+
 typedef struct ms_ocall_time_t {
 	int ms_retval;
 } ms_ocall_time_t;
@@ -217,10 +221,13 @@ SGX_EXTERNC const struct {
 
 SGX_EXTERNC const struct {
 	size_t nr_ocall;
-	uint8_t entry_table[47][4];
+	uint8_t entry_table[50][4];
 } g_dyn_entry_table = {
-	47,
+	50,
 	{
+		{0, 0, 0, 0, },
+		{0, 0, 0, 0, },
+		{0, 0, 0, 0, },
 		{0, 0, 0, 0, },
 		{0, 0, 0, 0, },
 		{0, 0, 0, 0, },
@@ -1282,17 +1289,58 @@ sgx_status_t SGX_CDECL ocall_closeoutputfile(void)
 
 	return status;
 }
-sgx_status_t SGX_CDECL ocall_startclock(void)
+sgx_status_t SGX_CDECL ocall_startclock1(void)
 {
 	sgx_status_t status = SGX_SUCCESS;
 	status = sgx_ocall(44, NULL);
 
 	return status;
 }
-sgx_status_t SGX_CDECL ocall_endclock(void)
+sgx_status_t SGX_CDECL ocall_endclock1(void)
 {
 	sgx_status_t status = SGX_SUCCESS;
 	status = sgx_ocall(45, NULL);
+
+	return status;
+}
+sgx_status_t SGX_CDECL ocall_time1(int* retval)
+{
+	sgx_status_t status = SGX_SUCCESS;
+
+	ms_ocall_time1_t* ms = NULL;
+	size_t ocalloc_size = sizeof(ms_ocall_time1_t);
+	void *__tmp = NULL;
+
+
+	__tmp = sgx_ocalloc(ocalloc_size);
+	if (__tmp == NULL) {
+		sgx_ocfree();
+		return SGX_ERROR_UNEXPECTED;
+	}
+	ms = (ms_ocall_time1_t*)__tmp;
+	__tmp = (void *)((size_t)__tmp + sizeof(ms_ocall_time1_t));
+	ocalloc_size -= sizeof(ms_ocall_time1_t);
+
+	status = sgx_ocall(46, ms);
+
+	if (status == SGX_SUCCESS) {
+		if (retval) *retval = ms->ms_retval;
+	}
+	sgx_ocfree();
+	return status;
+}
+
+sgx_status_t SGX_CDECL ocall_startclock(void)
+{
+	sgx_status_t status = SGX_SUCCESS;
+	status = sgx_ocall(47, NULL);
+
+	return status;
+}
+sgx_status_t SGX_CDECL ocall_endclock(void)
+{
+	sgx_status_t status = SGX_SUCCESS;
+	status = sgx_ocall(48, NULL);
 
 	return status;
 }
@@ -1314,7 +1362,7 @@ sgx_status_t SGX_CDECL ocall_time(int* retval)
 	__tmp = (void *)((size_t)__tmp + sizeof(ms_ocall_time_t));
 	ocalloc_size -= sizeof(ms_ocall_time_t);
 
-	status = sgx_ocall(46, ms);
+	status = sgx_ocall(49, ms);
 
 	if (status == SGX_SUCCESS) {
 		if (retval) *retval = ms->ms_retval;
