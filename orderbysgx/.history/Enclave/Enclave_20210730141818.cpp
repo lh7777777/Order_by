@@ -647,10 +647,10 @@ void ecall_orderby()
 
 		int kk;
 		ocall_time(&kk);
-		printf("排序Label %d用时 %d us\n" , i , kk);
+		printf("排序Label %d用时 %d ms\n" , i , kk);
 		timecnt += kk ;
 	}
-	printf("\n排序所有Label 共用时 %d us\n" , timecnt);
+	printf("\n排序所有Label 共用时 %d ms\n" , timecnt);
 
 	ocall_closedn1label();
 	ocall_closedn2label();
